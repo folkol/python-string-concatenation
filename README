@@ -271,3 +271,35 @@ output size  86.806640625 kb
 process size   8464 kb
 
 
+(venv) master$ for i in 1 4 5 6; do python maclemon.py $i; done
+method 1
+time 1.9071102142333984 ms
+output size  86.806640625 kb
+process size   8556 kb
+
+method 4
+time 0.2818107604980469 ms
+output size  86.806640625 kb
+process size   8408 kb
+
+method 5
+time 2.0432472229003906 ms
+output size  86.806640625 kb
+process size   8544 kb
+
+method 6
+time 0.24390220642089844 ms
+output size  86.806640625 kb
+process size   8412 kb
+
+
+
+Plot histogram of times, same graph.
+
+plot how they scale with loop_count
+
+Maybe area-chart where we plot max and min value?
+
+
+
+Use timeit with number=1 and high repeat.

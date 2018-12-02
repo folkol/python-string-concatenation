@@ -50,14 +50,11 @@ def call_method(num):
 	global process_size
 	ss = [repr(s) for s in range(loop_count)]
 	start = time.time()
-	z = eval('method' + str(num))(ss)
+	eval('method' + str(num))(ss)
 	end = time.time()
 	ps_stats()
-	print("method", num)
-	print("time", float((end-start) * 1000), "ms")
-	print("output size ", len(z) / 1024, "kb")
-	print("process size", process_size, "kb")
-	print()
+	print(float((end-start) * 1000))
+	# print()
 	
 loop_count = 20000
 pid = os.getpid()
