@@ -45,9 +45,9 @@ def method6():
 
 def ps_stats():
 	global process_size
-	# process_size = commands.getoutput('ps -o rss= -p ' + `pid`)
-	ps = commands.getoutput('ps -up ' + `pid`)
-	process_size = ps.split()[15]
+	process_size = commands.getoutput('ps -o rss= -p ' + `pid`)
+	# ps = commands.getoutput('ps -up ' + `pid`)
+	# process_size = ps.split()[15]
 
 def call_method(num):
 	global process_size

@@ -118,5 +118,104 @@ time 6.41894340515 ms
 output size  86 kb
 process size 26920 kb
 
+
 Move ps-subprocessess outside of the time measurement.
+
+(venv)master$ for i in {1..6}; do docker run --rm -v `pwd`/maclemon.py:/maclemon.py  python:2.7 python maclemon.py $i; done
+method 1
+time 2.51483917236 ms
+output size  86 kb
+process size 26648 kb
+
+method 2
+time 128.169059753 ms
+output size  86 kb
+process size 35672 kb
+
+method 3
+time 4.55188751221 ms
+output size  86 kb
+process size 28936 kb
+
+method 4
+time 2.76112556458 ms
+output size  86 kb
+process size 26924 kb
+
+method 5
+time 8.16178321838 ms
+output size  86 kb
+process size 26648 kb
+
+method 6
+time 1.64890289307 ms
+output size  86 kb
+process size 26924 kb
+
+Run 2:
+
+(venv)master$ for i in {1..6}; do docker run --rm -v `pwd`/maclemon.py:/maclemon.py  python:2.7 python maclemon.py $i; done
+method 1
+time 4.97484207153 ms
+output size  86 kb
+process size  6372 kb
+
+method 2
+time 126.070022583 ms
+output size  86 kb
+process size  7192 kb
+
+method 3
+time 4.6820640564 ms
+output size  86 kb
+process size  6560 kb
+
+method 4
+time 3.37409973145 ms
+output size  86 kb
+process size  6700 kb
+
+method 5
+time 5.36012649536 ms
+output size  86 kb
+process size  6332 kb
+
+method 6
+time 1.78790092468 ms
+output size  86 kb
+process size  6836 kb
+
+
+Python 2 on mac:
+
+(venv)master$ for i in {1..6}; do python maclemon.py $i; done
+method 1
+time 2.14195251465 ms
+output size  86 kb
+process size   3744 kb
+
+method 2
+time 78.3200263977 ms
+output size  86 kb
+process size   5200 kb
+
+method 3
+time 6.11805915833 ms
+output size  86 kb
+process size   3720 kb
+
+method 4
+time 3.37505340576 ms
+output size  86 kb
+process size   4144 kb
+
+method 5
+time 6.92296028137 ms
+output size  86 kb
+process size   3940 kb
+
+method 6
+time 2.11215019226 ms
+output size  86 kb
+process size   4112 kb
 
