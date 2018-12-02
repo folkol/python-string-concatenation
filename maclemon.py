@@ -4,10 +4,10 @@ from io import StringIO
 import time, subprocess, os
 from sys import argv
 
-def method1():
+def method1(ss):
 	out_str = ''
-	for num in range(loop_count):
-		out_str += repr(num)
+	for s in ss:
+		out_str += s
 	return out_str
 
 def method2():
@@ -24,22 +24,19 @@ def method3():
 		char_array.fromstring(repr(num))
 	return char_array.tostring()
 
-def method4():
-	str_list = []
-	for num in range(loop_count):
-		str_list.append(repr(num))
-	out_str = ''.join(str_list)
+def method4(ss):
+	out_str = ''.join(ss)
 	return out_str
 
-def method5():
+def method5(ss):
 	file_str = StringIO()
-	for num in range(loop_count):
-		file_str.write(repr(num))
+	for s in ss:
+		file_str.write(s)
 	out_str = file_str.getvalue()
 	return out_str
 
-def method6():
-	out_str = ''.join([repr(num) for num in range(loop_count)])
+def method6(ss):
+	out_str = ''.join(ss)
 	return out_str
 
 
@@ -51,8 +48,9 @@ def ps_stats():
 
 def call_method(num):
 	global process_size
+	ss = [repr(s) for s in range(loop_count)]
 	start = time.time()
-	z = eval('method' + str(num))()
+	z = eval('method' + str(num))(ss)
 	end = time.time()
 	ps_stats()
 	print("method", num)

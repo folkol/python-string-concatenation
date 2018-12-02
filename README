@@ -246,3 +246,28 @@ time 4.332065582275391 ms
 output size  86.806640625 kb
 process size   7396 kb
 
+
+
+Pre-calculate the string segments.
+
+method 1
+time 1.9528865814208984 ms
+output size  86.806640625 kb
+process size   8460 kb
+
+method 4
+time 0.30422210693359375 ms
+output size  86.806640625 kb
+process size   8492 kb
+
+method 5
+time 2.2428035736083984 ms
+output size  86.806640625 kb
+process size   8592 kb
+
+method 6
+time 0.26607513427734375 ms
+output size  86.806640625 kb
+process size   8464 kb
+
+
