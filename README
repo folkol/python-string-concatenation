@@ -80,8 +80,43 @@ Date:   Fri Aug 6 18:43:09 2004 +0000
     SF patch #980695:  efficient string concatenation
     (Original patch by Armin Rigo).
 
+ virtual memory size
+
+ http://fa.bianp.net/blog/2013/different-ways-to-get-memory-consumption-or-lessons-learned-from-memory_profiler/
 
 
-- Python strings are immutable
-- Adding two strings together creates a new one
-- 
+On python 2.7.15 on docker for mac
+
+(venv)master$ for i in {1..6}; do docker run --rm -v `pwd`/maclemon.py:/maclemon.py  python:2.7 python maclemon.py $i; done
+method 1
+time 6.27183914185 ms
+output size  86 kb
+process size 26640 kb
+
+method 2
+time 132.327079773 ms
+output size  86 kb
+process size 35656 kb
+
+method 3
+time 9.03797149658 ms
+output size  86 kb
+process size 28736 kb
+
+method 4
+time 6.8690776825 ms
+output size  86 kb
+process size 27688 kb
+
+method 5
+time 8.92305374146 ms
+output size  86 kb
+process size 26772 kb
+
+method 6
+time 6.41894340515 ms
+output size  86 kb
+process size 26920 kb
+
+Move ps-subprocessess outside of the time measurement.
+

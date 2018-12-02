@@ -8,7 +8,6 @@ def method1():
 	out_str = ''
 	for num in xrange(loop_count):
 		out_str += `num`
-	ps_stats()
 	return out_str
 
 def method2():
@@ -16,7 +15,6 @@ def method2():
 	out_str = MutableString()
 	for num in xrange(loop_count):
 		out_str += `num`
-	ps_stats()
 	return out_str
 
 def method3():
@@ -24,7 +22,6 @@ def method3():
 	char_array = array('c')
 	for num in xrange(loop_count):
 		char_array.fromstring(`num`)
-	ps_stats()
 	return char_array.tostring()
 
 def method4():
@@ -32,7 +29,6 @@ def method4():
 	for num in xrange(loop_count):
 		str_list.append(`num`)
 	out_str = ''.join(str_list)
-	ps_stats()
 	return out_str
 
 def method5():
@@ -40,17 +36,16 @@ def method5():
 	for num in xrange(loop_count):
 		file_str.write(`num`)
 	out_str = file_str.getvalue()
-	ps_stats()
 	return out_str
 
 def method6():
 	out_str = ''.join([`num` for num in xrange(loop_count)])
-	ps_stats()
 	return out_str
 
 
 def ps_stats():
 	global process_size
+	# process_size = commands.getoutput('ps -o rss= -p ' + `pid`)
 	ps = commands.getoutput('ps -up ' + `pid`)
 	process_size = ps.split()[15]
 
@@ -59,6 +54,7 @@ def call_method(num):
 	start = time.time()
 	z = eval('method' + str(num))()
 	end = time.time()
+	ps_stats()
 	print "method", num
 	print "time", float((end-start) * 1000), "ms"
 	print "output size ", len(z) / 1024, "kb"
