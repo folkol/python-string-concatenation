@@ -1,0 +1,16 @@
+Microbenchmarks
+Python String Concatenation
+
+waymoot.org: Efficient String Concatenation in Python — An assessment of the performance of several methods
+
+Introduction: Building long strings in the Python progamming language can sometimes result in very slow running code. In this article I investigate the computational performance of various string concatenation methods.
+
+For this comparison I required a test problem that calls for the construction of very long strings out of a large number of segments. It should not do much other computation, so that the measured performance is dependent only on the string operation performance.
+
+Aside: How determine the Sample Size?
+
+
+
+- Python strings are immutable
+- Adding two strings together creates a new one
+- 
