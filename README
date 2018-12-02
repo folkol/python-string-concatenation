@@ -219,3 +219,30 @@ time 2.11215019226 ms
 output size  86 kb
 process size   4112 kb
 
+
+
+Ran 2to3 on maclemon.py
+
+Method 2 and 3 does not work in Python 3.
+
+(venv) master$ for i in 1 4 5 6; do python maclemon.py $i; done
+method 1
+time 4.891872406005859 ms
+output size  86.806640625 kb
+process size   6888 kb
+
+method 4
+time 5.238056182861328 ms
+output size  86.806640625 kb
+process size   7456 kb
+
+method 5
+time 5.697011947631836 ms
+output size  86.806640625 kb
+process size   7284 kb
+
+method 6
+time 4.332065582275391 ms
+output size  86.806640625 kb
+process size   7396 kb
+
