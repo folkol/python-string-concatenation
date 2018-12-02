@@ -9,6 +9,77 @@ For this comparison I required a test problem that calls for the construction of
 
 Aside: How determine the Sample Size?
 
+loop_count = 20000
+			ops/s	 	process size (kB)
+Method 1	3770	 	2424
+Method 2	2230	 	2424
+Method 3	29,600	 	2452
+Method 4	83,700	 	3028
+Method 5	90,900	 	2536
+Method 6	119,800	 	3000
+
+loop_count = 500000
+			ops/s	 	process size (kB)
+Method 3	17,100	 	8,016
+Method 4	74,800	 	22,872
+Method 5	94,900	 	10,480
+Method 6	102,100	 	22,844
+
+Conclusions
+
+Use method 6 in most real programs.
+
+
+Efficient String Concatenation in Python (2016 edition)
+
+Builds on top of the old article, with small changes due to the timing module not being available.
+
+
+Method 1: simple concatenation: s1 += s2
+
+Method 2: concatenation using MutableString (s1 += s2, where s1 is a MutableString)
+
+Method 3: appending to a long array of char
+
+Method 4: building a list of strings, then calling "".join()
+
+Method 5: writing to a cStringIO buffer in memory using write()
+
+Method 6: same as Method 4 but using a list comprehension inline
+
+The results for Python 2.2.1 are below:
+
+runtime (ms) 	concatenations per second 
+Method 1 	55.11	362,910
+Method 2 	74.67	267,852
+Method 3 	10.80	1,851,337
+Method 4 	6.21	3,220,611
+Method 5 	8.11	2,467,612
+Method 6 	5.42	3,694,808
+
+So in Python 2.2.1 the list comprehension method was the fastest by a pretty clear margin. However when I re-ran using 2.7.12 things turned out very differently:
+
+runtime (ms)	concatenations per second
+Method 1	1.7995	11,113,977
+Method 2	90.1073	221,957
+Method 3	3.9557	5,055,967
+Method 4	2.1804	9,172,689
+Method 5	4.8047	4,162,585
+Method 6	1.4191	14,093,289
+
+
++- Patch #980695:  Implements efficient string concatenation for statements
++  of the form s=s+t and s+=t.  This will vary across implementations.
++  Accordingly, the str.join() method is strongly preferred for performance
++  sensitive code.
+
+commit 52a21b8e65e2a231595cfec639701266202438a2
+Author: Raymond Hettinger <python@rcn.com>
+Date:   Fri Aug 6 18:43:09 2004 +0000
+
+    SF patch #980695:  efficient string concatenation
+    (Original patch by Armin Rigo).
+
 
 
 - Python strings are immutable
