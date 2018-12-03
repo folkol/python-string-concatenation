@@ -1,5 +1,4 @@
-Microbenchmarks
-Python String Concatenation
+Microbenchmarks: Python String Concatenation
 
 waymoot.org: Efficient String Concatenation in Python — An assessment of the performance of several methods
 
@@ -303,3 +302,33 @@ Maybe area-chart where we plot max and min value?
 
 
 Use timeit with number=1 and high repeat.
+
+
+
+(venv) master$ for m in 1 4 5 6; do python maclemon.py $m 10; done
+25.74896812438965
+5.644083023071289
+5.5999755859375
+5.693197250366211
+(venv) master$ sudo purge
+(venv) master$ for m in 6 5 4 1; do python maclemon.py $m 10; done
+31.599998474121094
+5.453824996948242
+5.334138870239258
+6.019830703735352
+
+
+
+
+
+Slides:
+
+- Cover slide: "Python String Concatenation Performance (or Microbenchmarks: how to screw them up"
+    - a while ago, I pondered python string concatenation performance — and decided to google it
+- first page on google linked to waymoot
+    - waymoot's conclusions
+- first page also included maclemon, which built on waymoot
+    - maclemon's conclusions
+- let's reproduce!
+    - run maclemon's code, as is.
+    - 

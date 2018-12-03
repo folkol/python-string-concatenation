@@ -59,7 +59,8 @@ def call_method(num):
 loop_count = 20000
 pid = os.getpid()
 
-if len(argv) == 2:
+if len(argv) == 3:
+	loop_count = int(argv[2])
 	call_method(argv[1])
 else:
 	print("Usage: python stest.py <n>\n" \
