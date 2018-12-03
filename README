@@ -330,29 +330,41 @@ Slides:
         - I tried each method of the methods as a separate test using it's own python process. 
         - I ran these tests using Python 2.2.1 on a 433MHz PII Celeron under FreeBSD 4.9.
     - waymoot's results
-                        runtime ops/s   Process size (kB)
-            Method 1    5.3     3770	 	2424
-            Method 2    8.97    2230	 	2424
-            Method 3    0.67    29,600	 	2452
-            Method 4    0.24    83,700	 	3028
-            Method 5    0.22    90,900	 	2536
-            Method 6    0.17    119,800	 	3000
+                        ms      ops/s       Process size (kB)
+            Method 1    5300    3770	 	2424
+            Method 2    8970    2230	 	2424
+            Method 3    670     29,600	 	2452
+            Method 4    240     83,700	 	3028
+            Method 5    220     90,900	 	2536
+            Method 6    170     119,800	 	3000
 
     - waymoot's conclusions
         Use method 6 in almost all real work scenarios.
 
 - first page also included an article on mclemon, which built upon waymoot
-    - maclemon's measurements
+    - maclemon's measurements – python 2.2
 
                     runtime (ms)	concatenations per second
-        Method 1	1.7995	11,113,977
-        Method 2	90.1073	221,957
-        Method 3	3.9557	5,055,967
-        Method 4	2.1804	9,172,689
-        Method 5	4.8047	4,162,585
-        Method 6	1.4191	14,093,289
+        Method 1	55.11	        362,910
+        Method 2	74.67	        221,957
+        Method 3	10.80	        1,851,337
+        Method 4	6.21	        3,220,611
+        Method 5	8.11	        2,467,612
+        Method 6	5.42	        3,694,808
+
+    - maclemon's measurements – python 2.7
+
+                    runtime (ms)    concatenations per second
+        Method 1    1.7995           11,113,977
+        Method 2    90.1073          221,957
+        Method 3    3.9557           5,055,967
+        Method 4    2.1804           9,172,689
+        Method 5    4.8047           4,162,585
+        Method 6    1.4191           14,093,289
 
     - maclemon's conclusions
+        - They fixed method 1!
+        - (Actually, they did optimize it – show commit)
 
 - let's reproduce!
     - the code does not run on mac (due to incompatible ps...)
@@ -365,7 +377,7 @@ Slides:
             method 5     11.5070343018 ms    20048 kb
             method 6     11.6939544678 ms    21320 kb
 
-        - seems to match?
+        - Yay! Seems to reproduce mclemon's findings!
         - try again, with reverse order
             root@ubuntu-xenial:/home/vagrant/Python-2.2.1# for m in {6..1}; do ./python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
             method 6     88.8741016388 ms    21320 kb
@@ -374,7 +386,7 @@ Slides:
             method 3     22.4149227142 ms    22004 kb
             method 2     84.0399265289 ms    20016 kb
             method 1     35.5710983276 ms    19916 kb
-        - we will get back to this later
+        - we will get back to this later.
 
     - timing module is removed in python2.7, run mclemon's updated version instead
     - run mclemon's code, as is.
@@ -421,8 +433,11 @@ Slides:
             method 5t 11.2390518188 mst  4299408 kb
             method 6t 9.81187820435 mst  4299420 kb
 
-        - on mac, with ps_stats() moved outside of timing window
+        - Seems to very significantly in between runs
+            - show histogram
 
+        - on mac, with ps_stats() moved outside of timing window
+            
 
 
 
