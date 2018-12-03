@@ -323,12 +323,119 @@ Use timeit with number=1 and high repeat.
 
 Slides:
 
-- Cover slide: "Python String Concatenation Performance (or Microbenchmarks: how to screw them up"
-    - a while ago, I pondered python string concatenation performance — and decided to google it
-- first page on google linked to waymoot
+- Cover slide: "Python String Concatenation Performance Comparison (...or The Perils of Microbenchmarks!)"
+    - a while ago, I pondered the performance characteristics of the different was to concatenate strings in Python — and decided to google it
+- first page on google linked to an old article on waymoot.org
+    - show screenshot
+        - I tried each method of the methods as a separate test using it's own python process. 
+        - I ran these tests using Python 2.2.1 on a 433MHz PII Celeron under FreeBSD 4.9.
+    - waymoot's results
+                        runtime ops/s   Process size (kB)
+            Method 1    5.3     3770	 	2424
+            Method 2    8.97    2230	 	2424
+            Method 3    0.67    29,600	 	2452
+            Method 4    0.24    83,700	 	3028
+            Method 5    0.22    90,900	 	2536
+            Method 6    0.17    119,800	 	3000
+
     - waymoot's conclusions
-- first page also included maclemon, which built on waymoot
+        Use method 6 in almost all real work scenarios.
+
+- first page also included an article on mclemon, which built upon waymoot
+    - maclemon's measurements
+
+                    runtime (ms)	concatenations per second
+        Method 1	1.7995	11,113,977
+        Method 2	90.1073	221,957
+        Method 3	3.9557	5,055,967
+        Method 4	2.1804	9,172,689
+        Method 5	4.8047	4,162,585
+        Method 6	1.4191	14,093,289
+
     - maclemon's conclusions
+
 - let's reproduce!
-    - run maclemon's code, as is.
-    - 
+    - the code does not run on mac (due to incompatible ps...)
+        - running in a virtual linux machine in the mac:
+            root@ubuntu-xenial:/home/vagrant/Python-2.2.1# for m in {1..6}; do ./python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1     98.0460643768 ms    19916 kb
+            method 2     82.5369358063 ms    20016 kb
+            method 3     24.0340232849 ms    22004 kb
+            method 4     11.6310119629 ms    21320 kb
+            method 5     11.5070343018 ms    20048 kb
+            method 6     11.6939544678 ms    21320 kb
+
+        - seems to match?
+        - try again, with reverse order
+            root@ubuntu-xenial:/home/vagrant/Python-2.2.1# for m in {6..1}; do ./python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 6     88.8741016388 ms    21320 kb
+            method 5     11.7211341858 ms    20048 kb
+            method 4     12.9728317261 ms    21320 kb
+            method 3     22.4149227142 ms    22004 kb
+            method 2     84.0399265289 ms    20016 kb
+            method 1     35.5710983276 ms    19916 kb
+        - we will get back to this later
+
+    - timing module is removed in python2.7, run mclemon's updated version instead
+    - run mclemon's code, as is.
+        - does not work on mac os x
+        - vagrant@ubuntu-xenial:~/Python-2.2.1$ for m in {1..6}; do ./python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1     35.6409549713 ms    19916 kb
+            method 2     89.5040035248 ms    20016 kb
+            method 3     13.5838985443 ms    22004 kb
+            method 4     11.8288993835 ms    21320 kb
+            method 5     11.9268894196 ms    20048 kb
+            method 6     10.8439922333 ms    21320 kb
+
+        - python 2.7 in virtual machine
+            vagrant@ubuntu-xenial:~$ for m in {1..6}; do python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1     7.52997398376 ms    23620 kb
+            method 2     86.6270065308 ms    23744 kb
+            method 3     9.21201705933 ms    23620 kb
+            method 4     7.69209861755 ms    24580 kb
+            method 5     9.37390327454 ms    23772 kb
+            method 6     7.57193565369 ms    23812 kb
+
+        - on docker python:2.7
+            (venv) $ for m in {1..6}; do docker run --rm -v `pwd`/mclemon_r0.py:/mclemon_r0.py python:2.7 python /mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1t 13.6058330536 mst 26640 kb
+            method 2t 137.557983398 mst 35656 kb
+            method 3t 11.442899704 mst 28736 kb
+            method 4t 6.81900978088 mst 27688 kb
+            method 5t 14.014005661 mst 26772 kb
+            method 6t 7.49802589417 mst 26920 kb
+
+        - on mac, with slight modification to ps
+            (venv) $ for m in {1..6}; do python2.7 mclemon_r1.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1t 7.2979927063 mst  4299280 kb
+            method 2t 103.91998291 mst  4299424 kb
+            method 3t 14.9240493774 mst  4299320 kb
+            method 4t 16.4721012115 mst  4300364 kb
+            method 5t 12.531042099 mst  4299408 kb
+            method 6t 8.00180435181 mst  4299420 kb
+            (venv) $ for m in {1..6}; do python2.7 mclemon_r1.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1t 8.6829662323 mst  4299280 kb
+            method 2t 94.1798686981 mst  4299424 kb
+            method 3t 12.2678279877 mst  4299320 kb
+            method 4t 112.466096878 mst  4300364 kb
+            method 5t 11.2390518188 mst  4299408 kb
+            method 6t 9.81187820435 mst  4299420 kb
+
+        - on mac, with ps_stats() moved outside of timing window
+
+
+
+
+- outro
+    - do not believe everything that you read on the internet
+    - testing is hard
+    - use str.join!
+
+
+
+
+plot styles:
+    fivethirtyeight
+    ggplot
+    seaborn-muted
+    seaborn-pastel
