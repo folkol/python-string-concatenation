@@ -386,7 +386,7 @@ Slides:
             method 3     22.4149227142 ms    22004 kb
             method 2     84.0399265289 ms    20016 kb
             method 1     35.5710983276 ms    19916 kb
-        - we will get back to this later.
+        - we will get back to why later.
 
     - timing module is removed in python2.7, run mclemon's updated version instead
     - run mclemon's code, as is.
@@ -437,8 +437,20 @@ Slides:
             - show histogram
 
         - on mac, with ps_stats() moved outside of timing window
-            
+            - show histogram
+            - show histogram for both r0 and r2
 
+        - on mac, with repr outside of timing window
+            - show histogram
+            - show histogram for r0, r2 and r3
+
+
+
+        - disable gc before testing
+            - show histogram
+
+        - introduce the timeit module
+            - complain about the high default number
 
 
 - outro
@@ -454,3 +466,20 @@ plot styles:
     ggplot
     seaborn-muted
     seaborn-pastel
+
+
+
+
+method 1, 7.2979927063
+method 2, 103.91998291
+method 3, 14.9240493774
+method 4, 16.4721012115
+method 5, 12.531042099
+method 6, 8.00180435181
+
+method 1, 8.6829662323
+method 2, 94.1798686981
+method 3, 12.2678279877
+method 4, 112.466096878
+method 5, 11.2390518188
+method 6, 9.81187820435
