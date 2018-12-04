@@ -434,7 +434,7 @@ Slides:
             method 6t 9.81187820435 mst  4299420 kb
 
         - Seems to very significantly in between runs
-            - show histogram
+            - show histogram for one of them. note log scale
 
         - on mac, with ps_stats() moved outside of timing window
             - show histogram
@@ -444,6 +444,12 @@ Slides:
             - show histogram
             - show histogram for r0, r2 and r3
 
+        - how to they scale?
+            - (venv) $ for m in 1 3 4 5 6; do for i in {1..100}; do python2.7 mclemon_r4.py $m $(($i ** 2)) >>method$m.scale; done; done
+
+
+        - convert to python 3
+            - 2to3
 
 
         - disable gc before testing
