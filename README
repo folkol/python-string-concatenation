@@ -450,6 +450,7 @@ Slides:
         - convert to python 3
             - 2to3
 
+        - skip this?
         - method 2 and 3 does not work in python 3
             - explanation?
 
@@ -457,10 +458,12 @@ Slides:
         - $ STEP=10000 python lines.py method{1,4,5,6}.scale
 
         - disable gc before testing
-            - show histogram
+            - show histogram?
 
         - introduce the timeit module
             - complain about the high default number
+            - mention gc.disable()
+            - mention repeat
 
 
 - outro

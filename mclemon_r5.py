@@ -44,11 +44,6 @@ def method6(ss):
 	return out_str
 
 
-def ps_stats():
-	global process_size
-	process_size = subprocess.getoutput('ps -o vsz= -p ' + repr(pid))
-	# process_size = ps.split()[15]
-
 def call_method(num):
 	global process_size
 	ss = [repr(n) for n in range(loop_count)]
@@ -56,7 +51,6 @@ def call_method(num):
 	start = time.time()
 	z = eval('method' + str(num))(ss)
 	end = time.time()
-	ps_stats()
 	print(float((end-start) * 1000))
 	
 loop_count = 20000
