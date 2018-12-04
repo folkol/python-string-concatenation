@@ -2,6 +2,7 @@ import sys
 
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 bars = []
 height = []
@@ -20,7 +21,8 @@ plt.barh(y_pos, height, color='green', alpha=.5, edgecolor='black')
 # Create names on the y-axis
 plt.yticks(y_pos, bars)
 plt.xlabel("Runtime (lower = better)")
-plt.title("Concatenating 20.000 strings")
+plt.title(os.environ.get('TITLE', "Concatenating 20.000 strings"))
 
 # Show graphic
-plt.show()
+plt.savefig(sys.stdout.buffer, dpi=300)
+#plt.show()
