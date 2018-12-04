@@ -465,6 +465,11 @@ Slides:
             - mention gc.disable()
             - mention repeat
 
+        - pypy
+             $ for m in 1 4 6; do for i in {1..100000..1000}; do pypy mclemon_r6.py $m $i; done >>method$m.pypy; done
+        - win
+
+
 
 - outro
     - do not believe everything that you read on the internet
@@ -496,3 +501,155 @@ method 3, 12.2678279877
 method 4, 112.466096878
 method 5, 11.2390518188
 method 6, 9.81187820435
+
+
+
+
+
+
+
+
+
+
+
+
+Draft:
+
+- Cover slide:
+    - Python String Concatenation Performance
+    - ...or The Perils of Microbenchmarks (in scary font?)
+- Some slide? Ponder gif?:
+    - A while ago, I pondered the performance characteristics of str.join vs str.__iadd__ (”dunder i add, or in-place add.”). I decided to ask Google (big brother?) about it, and this talk is basically some blabbering about what I found.
+    - (For those of you who are not programmers, ”string concatenation” is the act of constructing a new string by attaching — or concatenating — one string onto the end of another. Like "constructing "
+    - ((And a string object is, in this context, a programmatic representation of a piece of text.))
+    - The catch with this computation is that the Python representation of a string is an immutable object, which means that we risk, unless we are really careful. running into samething called ”quadraric behaviour” — which is programmerspeak for pain and suffering (etc?)
+- Google.png:
+    - On the first page of the search results, I found a link to an old article published on waymoot.com, as well as a more recent derivative of the same article published on mclemon in 2016.
+- Waymoot.png:
+    - The article on waymoot compared 6 different ways to concatenate 20.000 short strings (why this figure?), with a conclusion to use either str.join or by writing the text fragments to a pseudofile in cases where using str.join is inconvenient, both of which avoid the dreaded quadratic behaviour by using an intermediate — mutable — representation of the string.
+    - test results
+- Mclemon.png:
+    - Fast-forward to 2016. Mclemon couldn’t reproduce waymoot’s findings. In particular, mclemon found (much) heigher performance on __iadd__.
+    - test results
+    - Mclemon tracked this down to a commit made by Raymond Hettinger back in 2004.
+    commit 52a21b8e65e2a231595cfec639701266202438a2
+    Author: Raymond Hettinger <python@rcn.com>
+    Date:   Fri Aug 6 18:43:09 2004 +0000
+
+        SF patch #980695:  efficient string concatenation
+        (Original patch by Armin Rigo).
+
+    diff --git a/Python/ceval.c b/Python/ceval.c
+    index 6c457e125c..4dd31ab9ba 100644
+    --- a/Python/ceval.c
+    +++ b/Python/ceval.c
+    @@ -85,6 +85,8 @@ static int exec_statement(PyFrameObject *,
+    { HERE BE BLACK MAGICK }
+    - Raymond is basically cheating, and actually mutating the old string object when it seems safe to do so — cheating quote?)
+
+- (image of replicator?): waymoot and mclemon published their test programs, let's reproduce!
+    - 
+
+- show results for 20000 strings
+    - is this a reasonable result?
+- show result for 1000
+    - is this a reasonable result?
+- show result for 0 strings
+    - is this a reasonable result?
+
+- Let's look at the test methods
+    - the original script does not work on mac, here are test results from a linux image
+        - root@ubuntu-xenial:/home/vagrant/Python-2.2.1# for m in {1..6}; do ./python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1     98.0460643768 ms    19916 kb
+            method 2     82.5369358063 ms    20016 kb
+            method 3     24.0340232849 ms    22004 kb
+            method 4     11.6310119629 ms    21320 kb
+            method 5     11.5070343018 ms    20048 kb
+            method 6     11.6939544678 ms    21320 kb
+    - Seems to match waymoot's results. Yay!
+    - Right?
+    - let's try running the tests in another order:
+        - root@ubuntu-xenial:/home/vagrant/Python-2.2.1# for m in {6..1}; do ./python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 6     88.8741016388 ms    21320 kb
+            method 5     11.7211341858 ms    20048 kb
+            method 4     12.9728317261 ms    21320 kb
+            method 3     22.4149227142 ms    22004 kb
+            method 2     84.0399265289 ms    20016 kb
+            method 1     35.5710983276 ms    19916 kb
+        - Doh!
+        - We will get back to why later.
+    - Let's try a modern version of Python.
+        - timing module is removed in python2.7, run mclemon's updated version instead.
+        - vagrant@ubuntu-xenial:~/Python-2.2.1$ for m in {1..6}; do ./python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1     35.6409549713 ms    19916 kb
+            method 2     89.5040035248 ms    20016 kb
+            method 3     13.5838985443 ms    22004 kb
+            method 4     11.8288993835 ms    21320 kb
+            method 5     11.9268894196 ms    20048 kb
+            method 6     10.8439922333 ms    21320 kb
+        - python 2.7 in virtual machine
+            vagrant@ubuntu-xenial:~$ for m in {1..6}; do python /vagrant/mclemon_r0.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1     7.52997398376 ms    23620 kb
+            method 2     86.6270065308 ms    23744 kb
+            method 3     9.21201705933 ms    23620 kb
+            method 4     7.69209861755 ms    24580 kb
+            method 5     9.37390327454 ms    23772 kb
+            method 6     7.57193565369 ms    23812 kb
+        - seems to reproduce mclemon's results
+        - run the exact same test again
+        -  (venv) $ for m in {1..6}; do python2.7 mclemon_r1.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1t 7.2979927063 mst  4299280 kb
+            method 2t 103.91998291 mst  4299424 kb
+            method 3t 14.9240493774 mst  4299320 kb
+            method 4t 16.4721012115 mst  4300364 kb
+            method 5t 12.531042099 mst  4299408 kb
+            method 6t 8.00180435181 mst  4299420 kb
+            (venv) $ for m in {1..6}; do python2.7 mclemon_r1.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
+            method 1t 8.6829662323 mst  4299280 kb
+            method 2t 94.1798686981 mst  4299424 kb
+            method 3t 12.2678279877 mst  4299320 kb
+            method 4t 112.466096878 mst  4300364 kb
+            method 5t 11.2390518188 mst  4299408 kb
+            method 6t 9.81187820435 mst  4299420 kb
+        - The results seems to very a lot....
+        - Seems to very significantly in between runs
+            - show histogram for one of them. note log scale
+            - show histogram for all of them.
+        - Let's take a look at what the test results are actually doing
+            - The test is producing and concatenating strings, and then spawning a sub process to measure memory usage...
+        - I wonder if scanning $PATH, and potentially loading the ps binary from disk, will affect the "concatenation times" in any way?
+        - Let's re-run the tests with ps_stats moved out of the measurement window
+            - show new histograms. Maybe in same graph as the old ones? 
+        - What if constructing strings from numbers isn't free?
+            - show new histograms, with the repr-part moved outside of the measuring windows.
+            - show new and old
+        - what if 
+
+- conclusion
+    - do not trust everthing that you read on the internet
+    - testing is hard
+    - use str.join!
+    (- thank you)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
