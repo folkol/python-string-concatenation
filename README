@@ -638,7 +638,7 @@ Draft:
                 ...
                 - show histogram
         - Armed with the timeit module, we can do some more testing.
-        - 
+        - Scale
 
 - conclusion
     - do not trust everthing that you read on the internet
