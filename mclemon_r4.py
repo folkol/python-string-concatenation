@@ -43,7 +43,6 @@ def method6(ss):
 	out_str = ''.join(ss)
 	return out_str
 
-
 def ps_stats():
 	global process_size
 	process_size = commands.getoutput('ps -o vsz= -p ' + `pid`)
