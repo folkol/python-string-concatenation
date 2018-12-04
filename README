@@ -528,8 +528,24 @@ Draft:
 - Waymoot.png:
     - The article on waymoot compared 6 different ways to concatenate 20.000 short strings (why this figure?), with a conclusion to use either str.join or by writing the text fragments to a pseudofile in cases where using str.join is inconvenient, both of which avoid the dreaded quadratic behaviour by using an intermediate — mutable — representation of the string.
     - test results
+
+            Method 6,170
+            Method 5,220
+            Method 4,240
+            Method 3,670
+            Method 2,8970
+            Method 1,5300
+
 - Mclemon.png:
     - Fast-forward to 2016. Mclemon couldn’t reproduce waymoot’s findings. In particular, mclemon found (much) heigher performance on __iadd__.
+
+        Method 6,    1.4191
+        Method 5,    4.8047
+        Method 4,    2.1804
+        Method 3,    3.9557
+        Method 2,    90.1073
+        Method 1,    1.7995
+
     - test results
     - Mclemon tracked this down to a commit made by Raymond Hettinger back in 2004.
     commit 52a21b8e65e2a231595cfec639701266202438a2
@@ -566,6 +582,14 @@ Draft:
             method 4     11.6310119629 ms    21320 kb
             method 5     11.5070343018 ms    20048 kb
             method 6     11.6939544678 ms    21320 kb
+
+            Method 6, 11.6939544678
+            Method 5, 11.5070343018
+            Method 4, 11.6310119629
+            Method 3, 24.0340232849
+            Method 2, 82.5369358063
+            Method 1, 98.0460643768
+
     - Seems to match waymoot's results. Yay!
     - Right?
     - let's try running the tests in another order:
@@ -576,6 +600,15 @@ Draft:
             method 3     22.4149227142 ms    22004 kb
             method 2     84.0399265289 ms    20016 kb
             method 1     35.5710983276 ms    19916 kb
+
+
+            Method 6, 88.8741016388
+            Method 5, 11.7211341858
+            Method 4, 12.9728317261
+            Method 3, 22.4149227142
+            Method 2, 84.0399265289
+            Method 1, 35.5710983276
+
         - Doh!
         - We will get back to why later.
     - Let's try a modern version of Python.
@@ -595,6 +628,15 @@ Draft:
             method 4     7.69209861755 ms    24580 kb
             method 5     9.37390327454 ms    23772 kb
             method 6     7.57193565369 ms    23812 kb
+
+
+            Method 6, 7.57193565369
+            Method 5, 9.37390327454
+            Method 4, 7.69209861755
+            Method 3, 9.21201705933
+            Method 2, 86.6270065308
+            Method 1, 7.52997398376
+
         - seems to reproduce mclemon's results
         - run the exact same test again
         -  (venv) $ for m in {1..6}; do python2.7 mclemon_r1.py $m; done | sed -n '/method/{ N;N;N;N;s/\n//g;s/time/\t/;s/output size  86 kb//;s/process size/\t/p; }'
@@ -611,6 +653,15 @@ Draft:
             method 4t 112.466096878 mst  4300364 kb
             method 5t 11.2390518188 mst  4299408 kb
             method 6t 9.81187820435 mst  4299420 kb
+
+
+            Method 6, 9.81187820435
+            Method 5, 11.2390518188
+            Method 4, 112.466096878
+            Method 3, 12.2678279877
+            Method 2, 94.1798686981
+            Method 1, 8.6829662323
+
         - The results seems to very a lot....
         - Seems to very significantly in between runs
             - show histogram for one of them. note log scale

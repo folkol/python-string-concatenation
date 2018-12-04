@@ -2,10 +2,12 @@ import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 colors = 'rgbmcb'
 # for style in plt.style.available:
 style = 'ggplot'
+title = os.environ.get('TITLE', 'Elapsed time')
 for c, file in enumerate(sys.argv[1:]):
     x = np.loadtxt(file)
 
@@ -22,7 +24,8 @@ for c, file in enumerate(sys.argv[1:]):
 
     plt.xlabel('Latency')
     plt.ylabel('#')
-    plt.title(f'Elapsed time {style}')
+    plt.title(title)
     plt.grid(True)
 plt.legend()
-plt.show()
+#plt.show()
+plt.savefig(sys.stdout.buffer, dpi=300)
