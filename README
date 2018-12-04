@@ -623,33 +623,26 @@ Draft:
         - What if constructing strings from numbers isn't free?
             - show new histograms, with the repr-part moved outside of the measuring windows.
             - show new and old
-        - what if 
+        - Enter the timeit module
+            - The tests above can be done with the timeit module:
+                >>> from timeit import timeit
+                >>> timeit("''.join(ss)", "ss = [repr(n) for n in range(20_000)")
+                423 years
+            - Wat?
+            - timeit, by default, runs the statement 1_000_000 times!
+                - This takes ages for non-trivial snippets – but it also obscures the distribution of results
+                >>> timeit("''.join(ss)", "ss = [repr(n) for n in range(20000)]", number=1)
+                0.00043858299613930285
+            - there is also a repeat-function in the timeit module, that just runs timeit a number of times and returns a list of results
+                >>> repeat("''.join(ss)", "ss = [repr(n) for n in range(20000)]", number=1, repeat=1000)
+                ...
+                - show histogram
+        - Armed with the timeit module, we can do some more testing.
+        - 
 
 - conclusion
     - do not trust everthing that you read on the internet
     - testing is hard
     - use str.join!
     (- thank you)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
